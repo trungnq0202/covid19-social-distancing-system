@@ -15,6 +15,7 @@ cap = cv2.VideoCapture(0)
 # Check if the webcam is opened correctly
 if not cap.isOpened():
     raise IOError("Cannot open webcam")
+
 time.sleep(2.0)
 # open the output CSV file for writing and initialize the set of
 # barcodes found thus far
@@ -25,7 +26,8 @@ found = set()
 while True:
 	# grab the frame from the threaded video stream and resize it to
 	# have a maximum width of 400 pixels
-	frame = cap.read()
+	ret, frame = cap.read()
+	frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
 	#frame = imutils.resize(frame, width=400)
 	# find the barcodes in the frame and decode each of the barcodes
 	barcodes = pyzbar.decode(frame)
@@ -64,3 +66,4 @@ csv.close()
 cv2.destroyAllWindows()
 
 #vs.stop()
+
