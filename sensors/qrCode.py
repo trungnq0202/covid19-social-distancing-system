@@ -6,6 +6,8 @@ import datetime
 import time
 import cv2
 
+from lcd16x2 import display_message
+
 VALID_QR = "negative with covid"
 
 def turn_on_qr_reader():
@@ -45,6 +47,7 @@ def turn_on_qr_reader():
 			# Check the barcode 
 			if barcodeData == VALID_QR:
 				cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+				display_message("Welcome")
 				cap.release()
 				#cap.stop()
 				cv2.destroyAllWindows()
@@ -52,6 +55,7 @@ def turn_on_qr_reader():
 			else:
 				cv2.putText(frame, "Invalid QR. Please try again." + str(3 - counter)	 + " times remaining.", 
 							(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+				display_message("Invalid QRcode")
 				cap.release()
 				cv2.destroyAllWindows()
 				return False
