@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI
+from starlette.responses import RedirectResponse
 
 from .routers import enviromentMonitor, humanEntryAndExit, qrCode
 
@@ -11,6 +12,6 @@ app.include_router(qrCode.router)
 
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello Bigger Applications!"}
+@app.get("/", include_in_schema=False)
+async def index():
+    return RedirectResponse(url="/docs")
