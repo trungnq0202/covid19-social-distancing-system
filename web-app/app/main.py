@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI
 
-from .routers import enviromentMonitor, humanEntryAndExit, qrCode
+from routers import enviromentMonitor, humanEntryAndExit, qrCode
 
 app = FastAPI()
 
