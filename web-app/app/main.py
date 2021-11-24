@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI
 from starlette.responses import RedirectResponse
 
-from .routers import enviromentMonitor, humanEntryAndExit, qrCode
+from routers import enviromentMonitor, humanEntryAndExit, qrCode
 
 app = FastAPI()
 
