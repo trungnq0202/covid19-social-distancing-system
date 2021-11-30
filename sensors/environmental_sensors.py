@@ -2,7 +2,7 @@ import time
 import requests
 from seeed_dht import DHT
 from grove.grove_moisture_sensor import GroveMoistureSensor
-from apiHelper import PATH
+from apiHelper import RequestsApi
 
 def scan():
     # Temperature sensor is connected to port D18
@@ -25,7 +25,10 @@ def scan():
         print('moisture: {}, {}'.format(mois, level))
         
         # Add data to database by calling an API
-        requests.post(PATH + "envimonitor/add/{}/{}/{}/{}".format(humi, temp, mois, level))
+        server = RequestsApi()
+        response = server.post("envimonitor/add/{}/{}/{}/{}".format(humi, temp, mois, level))
+        if response.ok is False:
+            print(response.raise_for_status())
         time.sleep(10)
         
         

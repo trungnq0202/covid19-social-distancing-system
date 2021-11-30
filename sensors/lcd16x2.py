@@ -1,5 +1,5 @@
 import time
-from grove.factory import Factory
+
 from grove.display import JHD1802
 # LCD 16x2 Characters
 dobj = JHD1802()
