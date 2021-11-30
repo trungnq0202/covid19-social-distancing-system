@@ -1,8 +1,5 @@
-#from imutils.video import VideoStream
 from pyzbar import pyzbar
-import argparse
 import datetime
-#import imutils
 import time
 import cv2
 
@@ -11,16 +8,11 @@ from lcd16x2 import display_message
 VALID_QR = "negative with covid"
 
 def turn_on_qr_reader():
-	counter = 0
-	# cap = VideoStream(usePiCamera=True).start()
 	cap = cv2.VideoCapture(0)
 
 	# Check if the webcam is opened correctly
 	if not cap.isOpened():
 		raise IOError("Cannot open webcam")
-
-	#time.sleep(2.0)
-
 
 	# loop over the frames from the video stream
 	while True:
@@ -28,7 +20,6 @@ def turn_on_qr_reader():
 		# have a maximum width of 400 pixels
 		ret, frame = cap.read()
 		frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
-		# frame = imutils.resize(frame, width=400)
 		# find the barcodes in the frame and decode each of the barcodes
 		barcodes = pyzbar.decode(frame)
 			# loop over the detected barcodes
@@ -44,16 +35,15 @@ def turn_on_qr_reader():
 			# draw the barcode data and barcode type on the image
 			text = "{} ({})".format(barcodeData, barcodeType)
 			
-			# Check the barcode 
+			# Check the barcode is valid or not
 			if barcodeData == VALID_QR:
 				cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 				display_message("Welcome")
 				cap.release()
-				#cap.stop()
 				cv2.destroyAllWindows()
 				return True
 			else:
-				cv2.putText(frame, "Invalid QR. Please try again." + str(3 - counter)	 + " times remaining.", 
+				cv2.putText(frame, "Invalid QR. Please try again.", 
 							(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 				display_message("Invalid QRcode")
 				cap.release()

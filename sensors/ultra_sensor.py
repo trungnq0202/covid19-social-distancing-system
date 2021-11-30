@@ -42,4 +42,6 @@ def scan():
         print(people)
         time.sleep(1)
       
-scan()
+
+if __name__ == "__main__":
+    scan()

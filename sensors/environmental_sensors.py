@@ -28,4 +28,6 @@ def scan():
         requests.post(PATH + "envimonitor/add/{}/{}/{}/{}".format(humi, temp, mois, level))
         time.sleep(10)
         
-scan()
+        
+if __name__ == '__main__':
+    scan()
