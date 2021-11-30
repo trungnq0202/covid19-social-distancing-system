@@ -43,20 +43,19 @@ def detect():
                     num_people -= 1
                     print("Somebody exits")
                     notify_person_action("exit")
+                    display_message("Good Bye")
                     update_num_people(num_people)
             elif distances == sorted(distances, reverse=True):
                 if num_people < 5:
                     """
                     Scan QR code here
                     """
-                    num_people += 1
                     print("Somebody enters")
-
                     if not turn_on_qr_reader():
-                        display_message("Invalid QR")
+                        distances.clear()
                         continue
                     display_message("Welcome")
-
+                    num_people += 1
                     notify_person_action("enter")
                     update_num_people(num_people)
                 else:

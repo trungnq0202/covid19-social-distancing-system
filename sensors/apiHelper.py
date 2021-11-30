@@ -1,7 +1,7 @@
 import requests
 from constant import LOCAL_URL
 class RequestsApi:
-    def __init__(self, base_url, **kwargs):
+    def __init__(self, base_url = None, **kwargs):
         self.base_url = base_url if base_url is not None else LOCAL_URL
         self.session = requests.Session()
         for arg in kwargs:
