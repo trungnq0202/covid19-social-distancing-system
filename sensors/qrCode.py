@@ -17,6 +17,7 @@ def turn_on_qr_reader():
 		ret, frame = cap.read()
 		frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
 		barcodes = pyzbar.decode(frame)
+		cv2.putText(frame, "SCAN QR CODE", (200, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 		for barcode in barcodes:
 			(x, y, w, h) = barcode.rect
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -24,7 +25,7 @@ def turn_on_qr_reader():
 			barcodeType = barcode.type
 			text = "{} ({})".format(barcodeData, barcodeType)
 			
-			# Check the barcode is valid or not
+			#Check the barcode is valid or not
 			if barcodeData == VALID_QR:
 				cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 				display_message("Welcome")
