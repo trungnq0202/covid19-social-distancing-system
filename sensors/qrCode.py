@@ -1,4 +1,5 @@
 #from imutils.video import VideoStream
+from fastapi.applications import FastAPI
 from pyzbar import pyzbar
 import argparse
 import datetime
@@ -6,12 +7,40 @@ import datetime
 import time
 import cv2
 
+import threading
+
+from starlette.responses import StreamingResponse
+import time
+import uvicorn
+from multiprocessing import Process, Queue
+import numpy as np
+from threading import Timer
+
 from lcd16x2 import display_message
 
 VALID_QR = "negative with covid"
 
+HTTP_PORT = 6064
+lock = threading.Lock()
+app = FastAPI()
+
+manager = None
+
+width = 1280
+height = 720
+
+def generator():
+	try:
+		while manager:
+			yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
+                   bytearray(manager.get()) + b'\r\n')
+	except GeneratorExit:
+		print('Cancelled')
+
 def turn_on_qr_reader():
 	counter = 0
+	stop_flag = False
+
 	# cap = VideoStream(usePiCamera=True).start()
 	cap = cv2.VideoCapture(0)
 
@@ -49,28 +78,49 @@ def turn_on_qr_reader():
 				cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 				display_message("Welcome")
 				cap.release()
+				stop_flag = True
 				#cap.stop()
-				cv2.destroyAllWindows()
-				return True
+				# cv2.destroyAllWindows()
+				# return True
 			else:
 				cv2.putText(frame, "Invalid QR. Please try again." + str(3 - counter)	 + " times remaining.", 
 							(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 				display_message("Invalid QRcode")
 				cap.release()
-				cv2.destroyAllWindows()
-				return False
+				# cv2.destroyAllWindows()
+				# return False
 		
 		# show the output frame
 		cv2.imshow("Barcode Scanner", frame)
 		key = cv2.waitKey(1) & 0xFF
-	
-		# if the `q` key was pressed, break from the loop
-		if key == ord("q"):
+		
+		(flag, encodedImage) = cv2.imdecode(".jpg", frame)
+		if not flag:
+			continue
+
+		manager.put(encodedImage)
+
+		if stop_flag:
+			t = Timer(5, cv2.destroyAllWindows())
+			t.start()
 			break
+
+		# if the `q` key was pressed, break from the loop
+		# if key == ord("q"):
+		# 	break
 
 	cap.release()
 	cv2.destroyAllWindows()
+	return
+	
+
+@app.get('/video-feed')
+async def video_feed():
+	return StreamingResponse(generator(), media_type='multipart/x-mixed-replace;boundary=frame')
+
 
 if __name__ == "__main__":
-	status = turn_on_qr_reader()
-	print(status)
+	# status = turn_on_qr_reader()
+	# print(status)
+	turn_on_qr_reader()
+	uvicorn.run(app, host="0.0.0.0", port=HTTP_PORT, access_log=True)
