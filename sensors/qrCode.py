@@ -95,7 +95,7 @@ def turn_on_qr_reader():
 		cv2.imshow("Barcode Scanner", frame)
 		key = cv2.waitKey(1) & 0xFF
 		
-		(flag, encodedImage) = cv2.imdecode(".jpg", frame)
+		(flag, encodedImage) = cv2.imencode(".jpg", frame)
 		if not flag:
 			continue
 
