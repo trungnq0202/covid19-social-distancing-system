@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import NotFound from "../../pages/error/NotFound/NotFound";
 import RoomEnvironment from "../../pages/RoomEnvironment/RoomEnvironment";
+import QRCodeScan from "../../pages/QRCodeScan/QRCodeScan";
 
 import "./App.css";
 
@@ -22,7 +23,7 @@ class App extends Component {
       <Switch>
           <Route path="/room-environment" exact component={RoomEnvironment} />
           {/* <Route path="/room-monitor" component={} /> */}
-          {/* <Route path="/qr-code-scan" component={} /> */}
+          <Route path="/qr-code-scan" component={QRCodeScan} />
 
           <Route path="*" component={NotFound} />
       </Switch>

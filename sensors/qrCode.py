@@ -25,6 +25,7 @@ lock = threading.Lock()
 app = FastAPI()
 
 manager = None
+count_keep_alive=0
 
 width = 1280
 height = 720
@@ -112,15 +113,37 @@ def turn_on_qr_reader():
 	cap.release()
 	cv2.destroyAllWindows()
 	return
-	
 
-@app.get('/video-feed')
+def manager_keep_alive(p):
+    global count_keep_alive
+    global manager
+    while count_keep_alive:
+        time.sleep(1)
+        print(count_keep_alive)
+        count_keep_alive -= 1
+    p.kill()
+    time.sleep(.5)
+    p.close()
+    manager.close()
+    manager = None
+
+@app.get('/')
 async def video_feed():
 	return StreamingResponse(generator(), media_type='multipart/x-mixed-replace;boundary=frame')
 
+@app.get('/keep-alive')
+def keep_alive():
+	global manager
+	global count_keep_alive
+	count_keep_alive = 100
+	if not manager:
+		manager = Queue()
+		p = Process(target=turn_on_qr_reader, args=())
+		p.start()
+		threading.Thread(target=manager_keep_alive, args=(p,)).start()
 
 if __name__ == "__main__":
 	# status = turn_on_qr_reader()
 	# print(status)
-	turn_on_qr_reader()
+	# turn_on_qr_reader()
 	uvicorn.run(app, host="0.0.0.0", port=HTTP_PORT, access_log=True)
