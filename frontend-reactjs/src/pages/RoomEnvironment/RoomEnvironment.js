@@ -13,7 +13,6 @@ const RoomEnvironment = (props) => {
     }, []);
 
     const fetchEnvVariables = async () => {
-        console.log("bruh");
         const res = await axios.get("/envimonitor/get");
         setData(res.data[res.data.length - 1]);
     };
