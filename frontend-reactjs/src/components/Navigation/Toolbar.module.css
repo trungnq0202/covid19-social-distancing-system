@@ -1,0 +1,99 @@
+.Toolbar {
+    height: 56px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #1e5081;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 0 20px; */
+    box-sizing: border-box;
+    z-index: 90;
+    color: white;
+  }
+  
+  .Toolbar nav {
+    height: 100%;
+    margin-right: 5%;
+  }
+  
+  .Toolbar nav:first-child {
+    display: flex;
+    margin-right: 0%;
+    margin-left: 1%;
+  }
+  
+  .Toolbar nav:first-child svg {
+    height: 100%;
+    font-size: 2em;
+    margin-right: 2px;
+  }
+  
+  .Toolbar nav:first-child h4 {
+    margin: auto;
+  }
+  
+  .Logo {
+    height: 80%;
+  }
+  
+  /* @media (max-width: 499px) {
+        .DesktopOnly {
+            display: none;
+        }
+    } */
+  
+  /* Dropdown Button */
+  .dropbtn {
+    background-color: #1e5081;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Dropdown button on hover & focus */
+  .dropbtn:hover,
+  .dropbtn:focus {
+    background-color: #2980b9;
+  }
+  
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdownContent {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdownContent button {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border: none;
+    width: 100%;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdownContent button:hover {
+    background-color: #ddd;
+  }
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {
+    display: block;
+  }
+  
