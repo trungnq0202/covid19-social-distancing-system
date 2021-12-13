@@ -1,4 +1,5 @@
 import time
+import statistics
 
 from qrCode import turn_on_qr_reader
 from lcd16x2 import display_message
@@ -23,6 +24,12 @@ def notify_person_action(action):
     if response.ok is False:
             print(response.raise_for_status())
 
+
+def calculate_motion(distances):
+    avg_dist = statistics.mean(distances[0:len(distances)-1])
+    return distances[-1] - avg_dist # positive for exit and negative for entry
+
+
             
 def detect():
 
@@ -36,16 +43,17 @@ def detect():
         # Perosn leaving -> distance between ultra sensor and person increases
         # Person entering -> distance between ultra sensor and person decreases
     while True:
-        if len(distances) == 3:
+        if len(distances) == 5:
             print(distances)
-            if distances == sorted(distances):
+            diff = calculate_motion(distances)
+            if diff >= 2:
                 if num_people > 0:
                     num_people -= 1
                     print("Somebody exits")
                     notify_person_action("exit")
                     display_message("Good Bye")
                     update_num_people(num_people)
-            elif distances == sorted(distances, reverse=True):
+            elif diff <= -2:
                 if num_people < 5:
                     """
                     Scan QR code here
@@ -66,7 +74,9 @@ def detect():
                     print("Too many people")
             distances.clear()
         else:
-            distances.append(u_sensor.get_distance())
+            dist = u_sensor.get_distance()
+            if dist <= 100:
+                distances.append()
 
         print("Number of people:" + str(num_people))
         time.sleep(1)
