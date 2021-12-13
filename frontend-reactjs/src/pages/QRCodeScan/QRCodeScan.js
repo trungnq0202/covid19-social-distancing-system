@@ -6,7 +6,7 @@ import './QRCodeScan.css';
 const QRCodeScan = (props) => {
     
     useEffect(() => {
-        axios.get('http://192.168.0.101:6064/keep-alive')
+        axios.get('http://172.20.10.6:6064/keep-alive')
     }, [])
 
     return (
@@ -14,7 +14,7 @@ const QRCodeScan = (props) => {
             <div className="container">
                 <h1 className="text-center">QR Code Scan</h1>
                 <img className="qr-scan-block" 
-                    src="http://192.168.0.101:6064/video-feed">
+                    src="http://172.20.10.6:6064/video-feed">
 
                 </img>
 
