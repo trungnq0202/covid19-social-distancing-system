@@ -27,7 +27,7 @@ def notify_person_action(action):
 
 def calculate_motion(distances):
     avg_dist = statistics.mean(distances[0:len(distances)-1])
-    return distances[-1] - avg_dist # positive for exit and negative for entry
+    return distances[-1] - distances[0] # positive for exit and negative for entry
 
 
             
@@ -59,9 +59,9 @@ def detect():
                     Scan QR code here
                     """
                     print("Somebody enters")
-                    if not turn_on_qr_reader():
-                        distances.clear()
-                        continue
+                    #if not turn_on_qr_reader():
+                    #    distances.clear()
+                    #    continue
                     display_message("Welcome")
                     num_people += 1
                     notify_person_action("enter")
@@ -76,10 +76,14 @@ def detect():
         else:
             dist = u_sensor.get_distance()
             if dist <= 100:
-                distances.append()
+                if len(distances) >= 1:
+                    if abs(distances[-1] - dist) > 2:
+                        distances.append(dist)
+                else:
+                    distances.append(dist)
 
         print("Number of people:" + str(num_people))
-        time.sleep(1)
+        time.sleep(0.5)
       
 
 if __name__ == "__main__":

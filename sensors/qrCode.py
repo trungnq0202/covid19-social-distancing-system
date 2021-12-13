@@ -1,4 +1,4 @@
-#from imutils.video import VideoStream
+from imutils.video import VideoStream
 from fastapi.applications import FastAPI
 from pyzbar import pyzbar
 import datetime
@@ -13,14 +13,24 @@ import uvicorn
 from multiprocessing import Process, Queue
 import numpy as np
 from threading import Timer
-
+from fastapi.middleware.cors import CORSMiddleware
 from lcd16x2 import display_message
 
 VALID_QR = "negative with covid"
 
-HTTP_PORT = 6064
+HTTP_PORT = 6065
 lock = threading.Lock()
 app = FastAPI()
+
+#cors for FastAPI
+origins = ["*"]
+app.add_middleware(
+	CORSMiddleware,
+	allow_origins=origins,
+	allow_credentials=True,
+	allow_methods=['*'],
+	allow_headers=['*']
+)
 
 manager = None
 count_keep_alive=0
@@ -63,16 +73,16 @@ def turn_on_qr_reader():
 				display_message("Welcome")
 				cap.release()
 				stop_flag = True
-				#cap.stop()
-				# cv2.destroyAllWindows()
-				# return True
+				cap.stop()
+				cv2.destroyAllWindows()
+				return True
 			else:
 				cv2.putText(frame, "Invalid QR. Please try again.", 
 							(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 				display_message("Invalid QRcode")
 				cap.release()
-				# cv2.destroyAllWindows()
-				# return False
+				cv2.destroyAllWindows()
+				return False
 		
 		# show the output frame
 		cv2.imshow("Barcode Scanner", frame)
@@ -95,7 +105,7 @@ def turn_on_qr_reader():
 
 	cap.release()
 	cv2.destroyAllWindows()
-	return
+	return True
 
 def manager_keep_alive(p):
     global count_keep_alive
@@ -110,7 +120,7 @@ def manager_keep_alive(p):
     manager.close()
     manager = None
 
-@app.get('/')
+@app.get('/video-feed')
 async def video_feed():
 	return StreamingResponse(generator(), media_type='multipart/x-mixed-replace;boundary=frame')
 
@@ -118,7 +128,7 @@ async def video_feed():
 def keep_alive():
 	global manager
 	global count_keep_alive
-	count_keep_alive = 100
+	count_keep_alive = 50
 	if not manager:
 		manager = Queue()
 		p = Process(target=turn_on_qr_reader, args=())
