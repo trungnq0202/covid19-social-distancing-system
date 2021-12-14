@@ -1,7 +1,9 @@
 import time
 import statistics
+import requests
+from starlette.datastructures import URL
 
-from qrCode import turn_on_qr_reader
+from qrCode import turn_on_qr_reader, keep_alive
 from lcd16x2 import display_message
 from apiHelper import RequestsApi
 
@@ -11,6 +13,7 @@ from second_sensor import get_dist
 server = RequestsApi()
 u_sensor = GroveUltrasonicRanger(16)
 
+QR_URL = 'http://0.0.0.0:6065/keep-alive'
 
 def update_num_people(num_people):
     response = server.put("humanEntryAndExit/update/people/{}".format(num_people))
@@ -34,59 +37,62 @@ def calculate_motion(distances):
 
 
             
-def detect():
+# def detect():
 
-    # Ultrasonic sensor connected to port D16
-    num_people = 0
-    update_num_people(num_people)
-    distances = []
+#     # Ultrasonic sensor connected to port D16
+#     num_people = 0
+#     update_num_people(num_people)
+#     distances = []
 
-    # Ultrasonic and motion sensor are opposite from each other (motion at door, ultra at wall)
-        # Perosn leaving -> distance between ultra sensor and person increases
-        # Person entering -> distance between ultra sensor and person decreases
-    while True:
-        if len(distances) == 5:
-            print(distances)
-            diff = calculate_motion(distances)
-            if diff >= 2:
-                if num_people > 0:
-                    num_people -= 1
-                    print("Somebody exits")
-                    notify_person_action("exit")
-                    display_message("Good Bye")
-                    update_num_people(num_people)
-            elif diff <= -2:
-                if num_people < 5:
-                    """
-                    Scan QR code here
-                    """
-                    print("Somebody enters")
-                    #if not turn_on_qr_reader():
-                    #    distances.clear()
-                    #    continue
-                    display_message("Welcome")
-                    num_people += 1
-                    notify_person_action("enter")
-                    update_num_people(num_people)
-                else:
-                    """
-                    Send warning here
-                    """
-                    display_message("Too many people")
-                    print("Too many people")
-            distances.clear()
-        else:
-            dist = u_sensor.get_distance()
-            if dist <= 100:
-                if len(distances) >= 1:
-                    if abs(distances[-1] - dist) > 2:
-                        distances.append(dist)
-                else:
-                    distances.append(dist)
+#     # Ultrasonic and motion sensor are opposite from each other (motion at door, ultra at wall)
+#         # Perosn leaving -> distance between ultra sensor and person increases
+#         # Person entering -> distance between ultra sensor and person decreases
+#     while True:
+#         if len(distances) == 5:
+#             print(distances)
+#             diff = calculate_motion(distances)
+#             if diff >= 2:
+#                 if num_people > 0:
+#                     num_people -= 1
+#                     print("Somebody exits")
+#                     notify_person_action("exit")
+#                     display_message("Good Bye")
+#                     update_num_people(num_people)
+#             elif diff <= -2:
+#                 if num_people < 5:
+#                     """
+#                     Scan QR code here
+#                     """
+#                     print("Somebody enters")
+#                     #if not turn_on_qr_reader():
+#                     #    distances.clear()
+#                     #    continue
+#                     if not turn_on_qr_reader():
+#                        distances.clear()
+#                        continue
+#                     display_message("Welcome")
+#                     num_people += 1
+#                     notify_person_action("enter")
+#                     update_num_people(num_people)
+#                 else:
+#                     """
+#                     Send warning here
+#                     """
+#                     display_message("Too many people")
+#                     print("Too many people")
+#             distances.clear()
+#         else:
+#             dist = u_sensor.get_distance()
+#             if dist <= 100:
+#                 if len(distances) >= 1:
+#                     if abs(distances[-1] - dist) > 2:
+#                         distances.append(dist)
+#                 else:
+#                     distances.append(dist)
 
 
-        print("Number of people:" + str(num_people))
-        time.sleep(0.5)
+#         print("Number of people:" + str(num_people))
+#         time.sleep(0.5)
       
 
 
@@ -100,7 +106,7 @@ def detect_entry():
         
         # exit case
         if len(sensor_exit_distances) == 2:
-            if abs(calculate_motion(sensor_exit_distances)) > 3:
+            if abs(calculate_motion(sensor_exit_distances)) > 3 and num_people != 0:
                 print("Somebody exits")
                 print(sensor_exit_distances)
                 num_people -= 1
@@ -119,10 +125,14 @@ def detect_entry():
                 if num_people < 5:
                     print("Somebody entry")
                     print(sensor_entry_distances)
-                    display_message("Welcome")
-                    num_people += 1
-                    notify_person_action("enter")
-                    update_num_people(num_people)
+                    r = requests.get(url=QR_URL)
+                    flag = r.json()['flag']
+                    print(flag)
+                    if flag:
+                        display_message("Welcome")
+                        num_people += 1
+                        notify_person_action("enter")
+                        update_num_people(num_people)
 
                 else: 
                     display_message("Too many people")
@@ -145,7 +155,7 @@ def detect_entry():
             sensor_entry_distances.append(sensor_entry_dist)
         
         print("Number of people:" + str(num_people))
-        time.sleep(1)
+        time.sleep(0.7)
 
 
 
