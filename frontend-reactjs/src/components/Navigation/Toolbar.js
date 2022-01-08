@@ -45,7 +45,7 @@ class Toolbar extends Component {
         </nav>
 
         <NavLink
-          to="/home"
+          to="/home-page"
           style={{
             color: "white",
           }}
@@ -68,19 +68,6 @@ class Toolbar extends Component {
           }}
         >
           Room Monitor
-        </NavLink>
-
-        <NavLink
-          to="/room-environment"
-          style={{
-            color: "white",
-          }}
-          activeStyle={{
-            fontWeight: "bold",
-            color: "red",
-          }}
-        >
-          Room Environment
         </NavLink>
 
         <NavLink
