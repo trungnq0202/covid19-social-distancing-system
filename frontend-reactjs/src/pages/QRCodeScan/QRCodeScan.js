@@ -15,7 +15,6 @@ const QRCodeScan = (props) => {
                 <h1 className="text-center">QR Code Scan</h1>
                 <img className="qr-scan-block" 
                     src="http://172.20.10.6:6064/video-feed">
-
                 </img>
 
             </div>
