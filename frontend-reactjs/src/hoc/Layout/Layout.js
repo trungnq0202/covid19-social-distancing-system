@@ -13,7 +13,7 @@ class Layout extends Component {
           title={this.props.title}
           username={this.props.username}
           logoutBtnHandler={this.props.onLogout} />
-        <main className="Content">
+        <main className="Content bg-danger text-light">
           {this.props.children}          
         </main>
       </Aux>
