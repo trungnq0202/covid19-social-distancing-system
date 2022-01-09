@@ -16,6 +16,7 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
+
 class MotionModel(BaseModel):
     status: str = Field(...)
 
@@ -28,19 +29,29 @@ class MotionModel(BaseModel):
 class EnviModel(BaseModel):
     humi: float = Field(...)
     temp: float = Field(...)
-    mois: float = Field(...)
     level: str = Field(...)
 
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
-
+ 
 
 class PeopleModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    total: int = Field(...)
+    current_num: int = Field(...)
+    total_number_people_in: int = Field(...)
+    total_number_people_out: int = Field(...)
     
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+class AlertFlag(BaseModel):
+    flag: bool = Field(...)
+
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True

@@ -14,14 +14,18 @@ async def get_environment_info():
 	envi_list = await databaseHelper.envi_collection.find().to_list(100)
 	return envi_list
 
-@router.post("/add/{humi}/{temp}/{mois}/{level}")
-async def create_envi(humi: float, temp: float, mois: float, level: str):
-	envi = jsonable_encoder(models.EnviModel(humi = humi, temp = temp, mois = mois, level = level))
+
+
+@router.post("/add/{humi}/{temp}/{level}")
+async def create_envi(humi: float, temp: float, level: str):
+	envi = jsonable_encoder(models.EnviModel(humi = humi, temp = temp, level = level))
 	await databaseHelper.envi_collection.insert_one(envi)
 	return JSONResponse(
                 status_code=status.HTTP_200_OK, 
                 content={"details": "Environment details have been added"}
             )
+
+
 
 @router.delete("/delete")
 async def delete_environment_info():

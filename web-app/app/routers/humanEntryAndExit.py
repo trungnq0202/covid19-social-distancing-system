@@ -41,19 +41,25 @@ async def notify_person_exit():
                 content={"details": "Somebody exits"}
             )
 
-@router.put("/update/people/{total}")
-async def update_num_people(total: int):
+@router.put("/update/people/{current_num}/{entry_num}/{exit_num}")
+async def update_num_people(current_num: int, entry_num: int, exit_num: int):
 	current_people = await databaseHelper.people_collection.find_one()
 	if current_people == None:
-		people = jsonable_encoder(models.PeopleModel(total = total))
+		people = jsonable_encoder(models.PeopleModel(current_num = current_num, 
+														total_number_people_in = entry_num, 
+														total_number_people_out = exit_num))
 		await databaseHelper.people_collection.insert_one(people)
 	else:
-		await databaseHelper.people_collection.update_one({"_id": current_people['_id']}, {"$set": {"total": total}})
+		await databaseHelper.people_collection.update_one({"_id": current_people['_id']}, 
+															{"$set": {"current_num": current_num,
+																		'total_number_people_in': entry_num, 
+																		'total_number_people_out': exit_num}})
 	
 	return JSONResponse(
                 status_code=status.HTTP_200_OK, 
                 content={"detail" : "The number of people has been updated"}
             )
+
 
 @router.delete("/delete/people")
 async def delete_people_info():
