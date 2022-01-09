@@ -39,10 +39,10 @@ class Toolbar extends Component {
 
     return (
       <header className={classes.Toolbar}>
-        <nav>
+        {/* <nav>
           <InfoCircle />
           <h4>{this.props.title}</h4>
-        </nav>
+        </nav> */}
 
         <NavLink
           to="/home-page"
@@ -83,7 +83,7 @@ class Toolbar extends Component {
           QR Code Scan
         </NavLink>
 
-        <nav>
+        {/* <nav>
           <div className={classes.dropdown}>
             <button
               onClick={this.showDropdownItems}
@@ -97,7 +97,7 @@ class Toolbar extends Component {
               <button onClick={this.props.logoutBtnHandler}>Logout</button>
             </div>
           </div>
-        </nav>
+        </nav> */}
       </header>
     );
   }
