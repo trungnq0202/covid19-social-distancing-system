@@ -297,7 +297,7 @@ def turn_on_qr_reader():
 
 	cap.release()
 	cv2.destroyAllWindows()
-	return Truex
+	return True
 
 # def manager_keep_alive(p):
 # 	global count_keep_alive

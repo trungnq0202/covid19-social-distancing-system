@@ -64,7 +64,7 @@ const RoomMonitor = (props) => {
   // Fetch env variable
   const fetchEnvVariables = async () => {
     const res = await axios.get("/envimonitor/get");
-    setEnviData(res.enviData[res.enviData.length - 1]);
+    setEnviData(res.data[res.data.length - 1]);
   };
 
   useEffect(() => {

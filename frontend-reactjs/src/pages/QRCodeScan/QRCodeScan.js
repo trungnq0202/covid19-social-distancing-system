@@ -7,17 +7,25 @@ import waitImage from "./waiting.jpg"
 const QRCodeScan = (props) => {
   // TODO: Add people api
   const [imgSrc, setImgSrc] = useState({});
-  var src = "http://172.20.10.6:6064/video-feed";
+  // var src = "http://172.20.10.6:6064/video-feed";
+  let streamingSrc = "http://192.168.0.101:8081/"
 
   useEffect(() => {
-    axios.get("http://172.20.10.6:6064/keep-alive")
+    // axios.get("http://172.20.10.6:6064/keep-alive")
+    axios.get("http://localhost:8000/qrcode/getStatus")
     .then((response) => {
-      setImgSrc(src);
+      console.log(response.data);
+      if (response.data == "pending") {
+        setImgSrc(waitImage)
+      } else {
+        setImgSrc(streamingSrc)
+      }
+      // setImgSrc(src);
     })
     .catch((error) => {
-      setImgSrc(
-        waitImage
-      );
+      // setImgSrc(
+      //   waitImage
+      // );
     });
   }, []);
 
