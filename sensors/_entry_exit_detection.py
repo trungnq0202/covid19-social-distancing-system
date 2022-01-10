@@ -8,7 +8,7 @@ from lcd16x2 import display_message
 from apiHelper import RequestsApi
 from grove.grove_mini_pir_motion_sensor import GroveMiniPIRMotionSensor
 
-QR_SERVER_HOST="http://0.0.0.0:8000/"
+QR_SERVER_HOST="http://172.20.10.2:8000/"
 ACTIVE_FLAG_TIME = 1
 
 server = RequestsApi()
@@ -41,8 +41,8 @@ def set_update_people_server_flag(flag):
 
 def check_valid_qr():
     #Request the server to allow streaming the qr code scaning process
-    response = qr_server.post("qr_code/setStatus/pending")
-    response = qr_server.get("qr_code/start_scanning")
+    response = qr_server.post("qrcode/setStatus/pending")
+    response = qr_server.get("qrcode/start-scanning")
     if response.ok is False:
         print(response.raise_for_status())
 
@@ -73,8 +73,9 @@ def handle_person_entry():
     if num_people == 5:
         display_message("Too many people")
     elif num_people >= 0:
-        # if not check_valid_qr():
-        #     return
+        if not check_valid_qr():
+            display_message("Invalid QR")
+            return
         num_people += 1
         total_enter += 1
         print(num_people)
