@@ -1,3 +1,5 @@
+from threading import Thread
+from time import sleep
 from cv2 import log
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
@@ -40,17 +42,17 @@ async def get_status():
 	return qr_status["status"]
 
 @router.get("/start-scanning")
-async def scan_qr_code():
-    qr_scan_result = qr_scan.scan_qr_code(0)
+async def scan_qr_code():   
+    qr_scan_result = qr_scan.scan_qr_code("http://172.20.10.3:8082/")
     qr_status = await databaseHelper.qr_code_status_collection.find_one()
     res = ""
     if qr_scan_result:
         res = "success"
     else:
-        res = "fail"        
+        res = "fail"
     await databaseHelper.qr_code_status_collection.update_one({"_id": qr_status['_id']}, 
 														    	{"$set": {"status": res}})
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content={"status": qr_scan_result}
+        content={"status": "pending"}
     )

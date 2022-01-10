@@ -51,7 +51,6 @@ def scan_qr_code(stream_origin):
 		if not flag:
 			continue
 
-
 		if stop_flag:
 			t = Timer(5, cv2.destroyAllWindows())
 			t.start()
