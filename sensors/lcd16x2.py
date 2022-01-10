@@ -9,16 +9,32 @@ def display_message(message):
     rows, cols = dobj.size()
     dobj.setCursor(0, 0)
     dobj.write(message)
-    time.sleep(10)
+    #time.sleep(5)
     dobj.clear()
 
 
-def display(message):
-    action_process = Process(target=display_message, args=(message, ))
+def main():
+    import time
 
-    # We start the process and we block for 5 seconds.
-    action_process.start()
-    action_process.join(timeout=5)
+    lcd = JHD1802()
+    rows, cols = lcd.size()
+    print("LCD model: {}".format(lcd.name))
+    print("LCD type : {} x {}".format(cols, rows))
 
-    # We terminate the process.
-    action_process.terminate()
+    lcd.backlight(False)
+    time.sleep(1)
+
+    lcd.backlight(False)
+    lcd.setCursor(0, 0)
+    lcd.write("hello world!")
+    lcd.setCursor(0, cols - 1)
+    lcd.write('X')
+    lcd.setCursor(rows - 1, 0)
+    for i in range(cols):
+        lcd.write(chr(ord('A') + i))
+
+    time.sleep(3)
+    lcd.clear()
+
+if __name__ == '__main__':
+    display_message("hello")
