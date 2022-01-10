@@ -1,4 +1,4 @@
-from entry_exit_detection import detect
+from _entry_exit_detection import detect
 from environmental_sensors import scan
 import thread
 
