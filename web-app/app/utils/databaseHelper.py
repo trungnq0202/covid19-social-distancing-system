@@ -11,4 +11,3 @@ motion_collection = db.motion_collection
 envi_collection = db.envi_collection
 people_collection = db.people_collection
 alert_flag_collection = db.alert_flag_collection
-qr_flag_collection = db.qr_flag_collection
