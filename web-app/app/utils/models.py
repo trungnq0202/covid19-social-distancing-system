@@ -49,7 +49,7 @@ class PeopleModel(BaseModel):
         json_encoders = {ObjectId: str}
 
 
-class AlertFlag(BaseModel):
+class Flag(BaseModel):
     flag: bool = Field(...)
 
     class Config:

@@ -12,21 +12,21 @@ router = APIRouter(
 
 
 @router.post("/setFlag/{flag}")
-async def set_flag():
-	flag = await databaseHelper.alert_flag_collection.find_one()
-	if flag == None:
-		flag = jsonable_encoder(models.AlertFlag(flag=flag))
-		await databaseHelper.alert_flag_collection.insert_one(flag)
+async def set_flag(flag: bool):
+	alert_flag = await databaseHelper.alert_flag_collection.find_one()
+	if alert_flag == None:
+		alert_flag = jsonable_encoder(models.Flag(flag=flag))
+		await databaseHelper.alert_flag_collection.insert_one(alert_flag)
 	else:
-		await databaseHelper.alert_flag_collection.update_one({"_id": flag['_id']}, 
+		await databaseHelper.alert_flag_collection.update_one({"_id": alert_flag['_id']}, 
 														    	{"$set": {"flag": flag}})
 	
 	return JSONResponse(
                 status_code=status.HTTP_200_OK, 
-                content={"detail" : "The number of people has been updated"}
+                content={"detail" : "Alert flag has been updated"}
             )
 
 @router.get("/getFlag")
 async def get_flag():
 	flag = await databaseHelper.alert_flag_collection.find_one()
-	return flag["flag"]
+	return bool(flag["flag"])
