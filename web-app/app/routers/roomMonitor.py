@@ -26,7 +26,7 @@ async def set_flag():
                 content={"detail" : "The number of people has been updated"}
             )
 
-@router.post("/getFlag}")
+@router.get("/getFlag")
 async def get_flag():
 	flag = await databaseHelper.alert_flag_collection.find_one()
 	return flag["flag"]

@@ -205,23 +205,23 @@ from lcd16x2 import display_message
 
 VALID_QR = "negative with covid"
 
-HTTP_PORT = 6065
-lock = threading.Lock()
-app = FastAPI()
+# HTTP_PORT = 6065
+# lock = threading.Lock()
+# app = FastAPI()
 
-#cors for FastAPI
-origins = ["*"]
-app.add_middleware(
-	CORSMiddleware,
-	allow_origins=origins,
-	allow_credentials=True,
-	allow_methods=['*'],
-	allow_headers=['*']
-)
+# #cors for FastAPI
+# origins = ["*"]
+# app.add_middleware(
+# 	CORSMiddleware,
+# 	allow_origins=origins,
+# 	allow_credentials=True,
+# 	allow_methods=['*'],
+# 	allow_headers=['*']
+# )
 
-manager = None
-return_val = None
-count_keep_alive=0
+# manager = None
+# return_val = None
+# count_keep_alive=0
 
 width = 1280
 height = 720
@@ -264,8 +264,8 @@ def turn_on_qr_reader():
 				# cap.stop()
 				cv2.destroyAllWindows()
 				# result_dict[str(0)] = True
-				return_val.put(True)
-				# return True
+				# return_val.put(True)
+				return True
 			else:
 				cv2.putText(frame, "Invalid QR. Please try again.", 
 							(x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -273,8 +273,8 @@ def turn_on_qr_reader():
 				cap.release()
 				cv2.destroyAllWindows()
 				# result_dict[str(0)] = False
-				return_val.put(False)
-				# return False
+				# return_val.put(False)
+				return False
 		
 		# show the output frame
 		cv2.imshow("Barcode Scanner", frame)
@@ -284,7 +284,7 @@ def turn_on_qr_reader():
 		if not flag:
 			continue
 
-		manager.put(encodedImage)
+		# manager.put(encodedImage)
 
 		if stop_flag:
 			t = Timer(5, cv2.destroyAllWindows())
@@ -297,62 +297,62 @@ def turn_on_qr_reader():
 
 	cap.release()
 	cv2.destroyAllWindows()
-	# return True
+	return Truex
 
-def manager_keep_alive(p):
-	global count_keep_alive
-	global manager
-	global return_val
-	while count_keep_alive:
-		time.sleep(1)
-		print(count_keep_alive)
-		count_keep_alive -= 1	
-	p.kill()
-	time.sleep(.5)
-	p.close()
+# def manager_keep_alive(p):
+# 	global count_keep_alive
+# 	global manager
+# 	global return_val
+# 	while count_keep_alive:
+# 		time.sleep(1)
+# 		print(count_keep_alive)
+# 		count_keep_alive -= 1	
+# 	p.kill()
+# 	time.sleep(.5)
+# 	p.close()
 	# manager.close()
 	# manager = None
 	# return_val.close()
 	# return_val = None
 
-@app.get('/video-feed')
-async def video_feed():
-	return StreamingResponse(generator(), media_type='multipart/x-mixed-replace;boundary=frame')
+# @app.get('/video-feed')
+# async def video_feed():
+# 	return StreamingResponse(generator(), media_type='multipart/x-mixed-replace;boundary=frame')
 
-@app.get('/has-stream')
-async def has_stream():
-	global manager
-	return {'has_stream': manager == True}
+# @app.get('/has-stream')
+# async def has_stream():
+# 	global manager
+# 	return {'has_stream': manager == True}
 
 
-@app.get('/keep-alive')
-def keep_alive():
-	global manager
-	global count_keep_alive
-	global return_val
-	count_keep_alive = 20
-	if not manager:
-		manager = Queue()
-		# _manager = multiprocessing.Manager()
-		# result_dict = _manager.dict()
-		return_val = Queue()
-		p = Process(target=turn_on_qr_reader, args=())
-		p.start()
-		threading.Thread(target=manager_keep_alive, args=(p,)).start()
-		p.join()
-		if return_val.empty():
-			res = False
-		else:
-			res = return_val.get()
-		print(res)
+# @app.get('/keep-alive')
+# def keep_alive():
+# 	global manager
+# 	global count_keep_alive
+# 	global return_val
+# 	count_keep_alive = 20
+# 	if not manager:
+# 		manager = Queue()
+# 		# _manager = multiprocessing.Manager()
+# 		# result_dict = _manager.dict()
+# 		return_val = Queue()
+# 		p = Process(target=turn_on_qr_reader, args=())
+# 		p.start()
+# 		threading.Thread(target=manager_keep_alive, args=(p,)).start()
+# 		p.join()
+# 		if return_val.empty():
+# 			res = False
+# 		else:
+# 			res = return_val.get()
+# 		print(res)
 
-		manager = None
-		return_val = None
-		return {'flag': res}
+# 		manager = None
+# 		return_val = None
+# 		return {'flag': res}
 		
 
-if __name__ == "__main__":	
-	# status = turn_on_qr_reader()
-	# print(status)
-	# turn_on_qr_reader()
-	uvicorn.run(app, host="0.0.0.0", port=HTTP_PORT, access_log=True)
+# if __name__ == "__main__":	
+# 	# status = turn_on_qr_reader()
+# 	# print(status)
+# 	# turn_on_qr_reader()
+# 	uvicorn.run(app, host="0.0.0.0", port=HTTP_PORT, access_log=True)

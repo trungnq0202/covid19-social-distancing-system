@@ -8,5 +8,5 @@ def display_message(message):
     rows, cols = dobj.size()
     dobj.setCursor(0, 0)
     dobj.write(message)
-    time.sleep(3)
+    time.sleep(10)
     dobj.clear()
