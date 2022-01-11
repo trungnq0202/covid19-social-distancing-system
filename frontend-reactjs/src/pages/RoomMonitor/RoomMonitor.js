@@ -56,9 +56,10 @@ const RoomMonitor = (props) => {
     setInterval(() => {
       getAlertFlag();
       if (flag === true) {
-        openDialog();
+        if (window.location.href == "http://localhost:3000/room-monitor")
+          openDialog();
       };
-    }, 1000);
+    }, 2000);
   }, []);
 
   // Fetch env variable
@@ -69,7 +70,8 @@ const RoomMonitor = (props) => {
 
   useEffect(() => {
     setInterval(() => {
-      fetchEnvVariables();
+      if (window.location.href == "http://localhost:3000/room-monitor")
+        fetchEnvVariables();
     }, 2000);
   }, []);
 
@@ -108,7 +110,7 @@ const RoomMonitor = (props) => {
           >
             <div className="video">
               <img
-                src="https://franklinchristianchurch.com/wp-content/uploads/2017/11/Waiting_web.jpg"
+                src="http://0.0.0.0:8003/"
                 class="img-fluid"
                 alt=" "
                 width="900 px"

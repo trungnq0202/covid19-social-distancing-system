@@ -11,10 +11,10 @@ const QRCodeScan = (props) => {
 
   useEffect(() => {
     setInterval(() => {
-        checkStreamOn();
-
-
-    }, 500);
+        console.log(window.location.href);
+        if (window.location.href == "http://localhost:3000/qr-code-scan")
+          checkStreamOn();
+    }, 2000);
 }, []);
 
   const checkStreamOn = async () => {
