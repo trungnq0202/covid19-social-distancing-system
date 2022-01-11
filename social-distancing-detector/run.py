@@ -5,6 +5,8 @@ from scipy.spatial import distance as dist
 import numpy as np
 import argparse, imutils, cv2, os, time, schedule
 
+
+
 #----------------------------Parse req. arguments------------------------------#
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--display", type=int, default=1,

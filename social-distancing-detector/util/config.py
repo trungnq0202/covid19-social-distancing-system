@@ -16,7 +16,8 @@ Thread = True
 Threshold = 2
 # Enter the ip camera url (e.g., url = 'http://191.138.0.100:8040/video');
 # Set url = 0 for webcam.
-url = 'http://192.168.0.101:8081/'
+# url = 'http://172.20.10.3:8081/'
+url = 0
 # Turn ON/OFF the email alert feature.
 ALERT = False
 # Set mail to receive the real-time alerts. E.g., 'xxx@gmail.com'.
@@ -24,7 +25,7 @@ MAIL = ''
 # Set if GPU should be used for computations; Otherwise uses the CPU by default.
 USE_GPU = True
 # Define the max/min safe distance limits (in pixels) between 2 people.
-MAX_DISTANCE = 80
-MIN_DISTANCE = 50
+MAX_DISTANCE = 500
+MIN_DISTANCE = 250
 #===============================================================================
 #===============================================================================
