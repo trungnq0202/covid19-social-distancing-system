@@ -23,29 +23,18 @@ const RoomMonitor = (props) => {
   const [flag, setFlag] = useState({});
   const [peopleData, setPeopleData] = useState({});
 
-  // Fetch env variable
-  const fetchEnvVariables = async () => {
-    const res = await axios.get("/envimonitor/get");
-    setEnviData(res.data[res.data.length - 1]);
-  };
-
-  useEffect(() => {
-    setInterval(() => {
-      fetchEnvVariables();
-    }, 10000);
-  }, []);
-
   // Fetch people data
   const fetchPeopleVariables = async () => {
     const res = await axios.get("/humanEntryAndExit/get/people");
     setPeopleData(res.data);
   };
 
-  useEffect(() => {
-    setInterval(() => {
-      fetchPeopleVariables();
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     if (window.location.href == "http://localhost:3000/room-monitor")
+  //       fetchPeopleVariables();
+  //   }, 2000);
+  // }, []);
   // Dialog function
   /*
   Flow: 
@@ -74,15 +63,15 @@ const RoomMonitor = (props) => {
     setFlag(res);
   };
 
-  useEffect(() => {
-    setInterval(() => {
-      getAlertFlag();
-      if (flag === true) {
-        if (window.location.href == "http://localhost:3000/room-monitor")
-          openDialog();
-      };
-    }, 2000);
-  }, []);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     getAlertFlag();
+  //     if (flag === true) {
+  //       if (window.location.href == "http://localhost:3000/room-monitor")
+  //         openDialog();
+  //     };
+  //   }, 2000);
+  // }, []);
 
   // Fetch env variable
   const fetchEnvVariables = async () => {
@@ -92,9 +81,16 @@ const RoomMonitor = (props) => {
 
   useEffect(() => {
     setInterval(() => {
-      if (window.location.href == "http://localhost:3000/room-monitor")
+      if (window.location.href == "http://localhost:3000/room-monitor") {
         fetchEnvVariables();
-    }, 2000);
+        getAlertFlag();
+        if (flag === true) { 
+          openDialog();
+        }
+        fetchPeopleVariables();
+      }
+
+    }, 10000);
   }, []);
 
   return (

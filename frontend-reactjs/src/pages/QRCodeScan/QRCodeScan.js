@@ -26,12 +26,6 @@ const QRCodeScan = (props) => {
     }, 2000);
 }, []);
 
-  useEffect(() => {
-    setInterval(() => {
-      checkStreamOn();
-    }, 500);
-  }, []);
-
   const checkStreamOn = async () => {
     const res = await axios.get("http://0.0.0.0:8001/qrcode/getStatus");
     if (res.data == "pending") {

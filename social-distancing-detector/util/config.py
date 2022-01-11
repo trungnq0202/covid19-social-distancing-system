@@ -9,7 +9,7 @@ NMS_THRESH = 0.3
 #=================================\CONFIG./=====================================
 """ Below are your desired config. options to set for real-time inference """
 # To count the total number of people (True/False).
-People_Counter = True
+People_Counter = False
 # Threading ON/OFF. Please refer 'mylib>thread.py'.
 Thread = True
 # Set the threshold value for total violations limit.
@@ -23,7 +23,7 @@ ALERT = False
 # Set mail to receive the real-time alerts. E.g., 'xxx@gmail.com'.
 MAIL = ''
 # Set if GPU should be used for computations; Otherwise uses the CPU by default.
-USE_GPU = True
+USE_GPU = False
 # Define the max/min safe distance limits (in pixels) between 2 people.
 MAX_DISTANCE = 500
 MIN_DISTANCE = 250

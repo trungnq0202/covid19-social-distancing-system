@@ -190,7 +190,7 @@ def manager_keep_alive(p):
         print(count_keep_alive)
         count_keep_alive -= 1
     p.kill()
-    time.sleep(.5)
+    # time.sleep(.5)
     p.close()
     manager.close()
     manager = None
@@ -213,7 +213,7 @@ async def video_feed():
 def keep_alive():
     global manager
     global count_keep_alive
-    count_keep_alive = 100
+    count_keep_alive = 100000000
     if not manager:
         manager = Queue()
         p = Process(target=start_stream, args=(PI_STREAM_URL, manager,))
