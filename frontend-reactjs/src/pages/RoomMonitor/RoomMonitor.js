@@ -18,12 +18,34 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 const RoomMonitor = (props) => {
-  // TODO: Add people api
   const [enviData, setEnviData] = useState({});
   const [open, setOpen] = React.useState(false);
   const [flag, setFlag] = useState({});
+  const [peopleData, setPeopleData] = useState({});
 
+  // Fetch env variable
+  const fetchEnvVariables = async () => {
+    const res = await axios.get("/envimonitor/get");
+    setEnviData(res.data[res.data.length - 1]);
+  };
 
+  useEffect(() => {
+    setInterval(() => {
+      fetchEnvVariables();
+    }, 10000);
+  }, []);
+
+  // Fetch people data
+  const fetchPeopleVariables = async () => {
+    const res = await axios.get("/humanEntryAndExit/get/people");
+    setPeopleData(res.data);
+  };
+
+  useEffect(() => {
+    setInterval(() => {
+      fetchPeopleVariables();
+    }, 1000);
+  }, []);
   // Dialog function
   /*
   Flow: 
@@ -77,31 +99,31 @@ const RoomMonitor = (props) => {
 
   return (
     <Layout>
-      <div className="container-roomMonitor" style={{ height: "100vh"}}>
-        <h1 class="text-center" style={{ paddingTop: "30px"}}>
+      <div className="container-roomMonitor" style={{ height: "100vh" }}>
+        <h1 class="text-center" style={{ paddingTop: "30px" }}>
           Room Monitor
         </h1>
         <div className="row justify-content-center">
           <div className="col-md-4 text-center">
-            <div class="col-md" style={{ padding: "50px" }}>
+            <div class="col-md" style={{ padding: "30px" }}>
               <ThermometerHalf size={70} />
               <br />
               <h4> Temperature </h4>
               <h4>{enviData.temp}</h4>
             </div>
 
-            <div class="col-md" style={{ padding: "50px" }}>
+            <div class="col-md" style={{ padding: "30px" }}>
               <DropletHalf size={70} />
               <br />
               <h4> Humidity </h4>
               <h4>{enviData.humi}</h4>
             </div>
 
-            <div class="col-md" style={{ padding: "50px" }}>
+            <div class="col-md" style={{ padding: "30px" }}>
               <PeopleFill size={70} />
               <br />
               <h4> Number of people in the room </h4>
-              <h4> 10 </h4>
+              <h4> {peopleData.current_num} </h4>
             </div>
           </div>
           <div
@@ -113,7 +135,7 @@ const RoomMonitor = (props) => {
                 src="http://0.0.0.0:8003/"
                 class="img-fluid"
                 alt=" "
-                width="900 px"
+                width="90%"
               />
             </div>
           </div>
