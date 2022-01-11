@@ -3,7 +3,7 @@ from fastapi import Depends, FastAPI
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware 
 import uvicorn
-from routers import enviromentMonitor, humanEntryAndExit, qrCode
+from routers import enviromentMonitor, humanEntryAndExit, qrCode, roomMonitor
 
 app = FastAPI()
 
@@ -20,6 +20,7 @@ app.add_middleware(
 app.include_router(enviromentMonitor.router)
 app.include_router(humanEntryAndExit.router)
 app.include_router(qrCode.router)
+app.include_router(roomMonitor.router)
 
 
 
