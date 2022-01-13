@@ -6,6 +6,7 @@ import threading
 import imutils
 import time
 import cv2
+from util.apiHelper import RequestsApi
 import uvicorn
 from multiprocessing import Process, Queue
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,11 +23,11 @@ HTTP_PORT = 8003
 lock = threading.Lock()
 app = FastAPI()
 
+SERVER_HOST = "http://0.0.0.0:8001/"
+server = RequestsApi(base_url=SERVER_HOST)
+
 manager = None
 count_keep_alive = 0
-
-# PI_STREAM_URL = 'http://172.20.10.3:8081/'
-PI_STREAM_URL = 0
 
 #cors for FastAPI
 origins = ["*"]
@@ -108,19 +109,21 @@ def start_stream(url_rtsp, manager):
             centroids = np.array([r[2] for r in results])
             D = dist.cdist(centroids, centroids, metric="euclidean")
 
-            # loop over the upper triangular of the distance matrix
-            for i in range(0, D.shape[0]):
-                for j in range(i + 1, D.shape[1]):
-				    # check to see if the distance between any two
-				    # centroid pairs is less than the configured number of pixels
-                    if D[i, j] < config.MIN_DISTANCE:
-					# update our violation set with the indexes of the centroid pairs
-                        serious.add(i)
-                        serious.add(j)
-                # update our abnormal set if the centroid distance is below max distance limit
-                if (D[i, j] < config.MAX_DISTANCE) and not serious:
-                    abnormal.add(i)
-                    abnormal.add(j)
+            n, _ = D.shape
+            for i in range(0, n):
+                for j in range(i + 1, n):
+                    if D[i, j] < config.MAX_DISTANCE:
+                        abnormal.add(i)
+                        abnormal.add(j)
+
+            for i in range(0, n):
+                for j in range(0, n):
+                    for k in range(0, n):
+                        if i != j and j != k and i != k:
+                            if D[i, j] < config.MAX_DISTANCE and D[j, k] < config.MAX_DISTANCE:
+                                serious.add(i)
+                                serious.add(j)
+                                serious.add(k)
 
         # loop over the results
         for (i, (prob, bbox, centroid)) in enumerate(results):
@@ -135,6 +138,7 @@ def start_stream(url_rtsp, manager):
                 color = (0, 0, 255)
             elif i in abnormal:
                 color = (0, 255, 255) #orange = (0, 165, 255)
+            
 
 		    # draw (1) a bounding box around the person and (2) the
 		    # centroid coordinates of the person,
@@ -142,32 +146,30 @@ def start_stream(url_rtsp, manager):
             cv2.circle(frame, (cX, cY), 5, color, 2)
 
         # draw some of the parameters
-        Safe_Distance = "Safe distance: >{} px".format(config.MAX_DISTANCE) 
-        cv2.putText(frame, Safe_Distance, (470, frame.shape[0] - 25),
-		    cv2.FONT_HERSHEY_SIMPLEX, 0.60, (255, 0, 0), 2)
-        Threshold = "Threshold limit: {}".format(config.Threshold)
-        cv2.putText(frame, Threshold, (470, frame.shape[0] - 50),
-		    cv2.FONT_HERSHEY_SIMPLEX, 0.60, (255, 0, 0), 2)
+        # Safe_Distance = "Safe distance: >{} px".format(config.MAX_DISTANCE) 
+        # cv2.putText(frame, Safe_Distance, (470, frame.shape[0] - 25),
+		#     cv2.FONT_HERSHEY_SIMPLEX, 0.60, (255, 0, 0), 2)
+        # Threshold = "Threshold limit: {}".format(config.Threshold)
+        # cv2.putText(frame, Threshold, (470, frame.shape[0] - 50),
+		#     cv2.FONT_HERSHEY_SIMPLEX, 0.60, (255, 0, 0), 2)
 
         # draw the total number of social distancing violations on the output frame
-        text = "Total serious violations: {}".format(len(serious))
+        text = "Total group violations: {}".format(len(serious))
         cv2.putText(frame, text, (10, frame.shape[0] - 55),
             cv2.FONT_HERSHEY_SIMPLEX, 0.70, (0, 0, 255), 2)
 
-        text1 = "Total abnormal violations: {}".format(len(abnormal))
+        text1 = "Total distance violations: {}".format(len(abnormal))
         cv2.putText(frame, text1, (10, frame.shape[0] - 25),
             cv2.FONT_HERSHEY_SIMPLEX, 0.70, (0, 255, 255), 2)
 
         #------------------------------Alert function----------------------------------#
         if len(serious) >= config.Threshold:
-            cv2.putText(frame, "-ALERT: Violations over limit-", (10, frame.shape[0] - 80),
-                cv2.FONT_HERSHEY_COMPLEX, 0.60, (0, 0, 255), 2)
-            if config.ALERT:
-                print("")
-                print('[INFO] Sending mail...')
-                # Mailer().send(config.MAIL) #TODO Call alert api
-                print('[INFO] Mail sent')
-		    #config.ALERT = False
+            # cv2.putText(frame, "-ALERT: Violations over limit-", (10, frame.shape[0] - 80),
+            #     cv2.FONT_HERSHEY_COMPLEX, 0.60, (0, 0, 255), 2)
+            response = server.post('roomMonitor/setTask4Flag/true')
+            
+        if len(abnormal) >= config.Threshold:
+            response = server.post('roomMonitor/setTask3Flag/true')
 
         # frame = vs.read()
         # frame = imutils.resize(frame, width=680)
@@ -216,7 +218,7 @@ def keep_alive():
     count_keep_alive = 100000000
     if not manager:
         manager = Queue()
-        p = Process(target=start_stream, args=(PI_STREAM_URL, manager,))
+        p = Process(target=start_stream, args=(config.url, manager,))
         p.start()
         threading.Thread(target=manager_keep_alive, args=(p,)).start()
 

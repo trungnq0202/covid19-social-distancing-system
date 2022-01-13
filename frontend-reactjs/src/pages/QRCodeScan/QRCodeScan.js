@@ -8,7 +8,7 @@ const QRCodeScan = (props) => {
   const [imgSrc, setImgSrc] = useState({});
   const [peopleData, setPeopleData] = useState({});
 
-  let streamingSrc = "http://172.20.10.90:8082/";
+  let streamingSrc = "http://172.20.10.3:8081/";
 
    // Fetch people data
   const fetchPeopleVariables = async () => {

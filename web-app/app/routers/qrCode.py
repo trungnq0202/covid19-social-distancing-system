@@ -8,6 +8,7 @@ from starlette import status
 import json
 from utils import models, databaseHelper, qr_scan
 
+CAMERA_IP_SERVER = "http://172.20.10.3:8081/"
 
 router = APIRouter(
 		prefix="/qrcode",
@@ -43,7 +44,7 @@ async def get_status():
 
 @router.get("/start-scanning")
 async def scan_qr_code():   
-    qr_scan_result = qr_scan.scan_qr_code("http://172.20.10.3:8082/")
+    qr_scan_result = qr_scan.scan_qr_code(CAMERA_IP_SERVER)
     qr_status = await databaseHelper.qr_code_status_collection.find_one()
     res = ""
     if qr_scan_result:

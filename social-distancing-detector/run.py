@@ -5,8 +5,6 @@ from scipy.spatial import distance as dist
 import numpy as np
 import argparse, imutils, cv2, os, time, schedule
 
-
-
 #----------------------------Parse req. arguments------------------------------#
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--display", type=int, default=1,
@@ -76,7 +74,7 @@ while True:
 		# Euclidean distances between all pairs of the centroids
 		centroids = np.array([r[2] for r in results])
 		D = dist.cdist(centroids, centroids, metric="euclidean")
-
+        
 		# loop over the upper triangular of the distance matrix
 		for i in range(0, D.shape[0]):
 			for j in range(i + 1, D.shape[1]):

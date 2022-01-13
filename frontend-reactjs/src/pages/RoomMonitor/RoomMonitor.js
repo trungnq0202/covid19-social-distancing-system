@@ -19,8 +19,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 const RoomMonitor = (props) => {
   const [enviData, setEnviData] = useState({});
-  const [open, setOpen] = React.useState(false);
-  const [flag, setFlag] = useState({});
+  // const [flag3, setFlag3] = useState(false);
+  // const [flag4, setFlag4] = useState(false);
   const [peopleData, setPeopleData] = useState({});
 
   // Fetch people data
@@ -29,13 +29,6 @@ const RoomMonitor = (props) => {
     setPeopleData(res.data);
   };
 
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     if (window.location.href == "http://localhost:3000/room-monitor")
-  //       fetchPeopleVariables();
-  //   }, 2000);
-  // }, []);
-  // Dialog function
   /*
   Flow: 
   When there is a detect of violation the rule, the flag will be set to true in the system,
@@ -44,34 +37,43 @@ const RoomMonitor = (props) => {
 
   When the dialog is close, the flag will be set to false by api
   */
-  const openDialog = () => {
-    setOpen(true);
-  };
+  // const handleClose3 = () => {
+  //   setFlag3(false)
+  //   setAlertFlagTask3(false)
+  // };
 
-  const handleClose = () => {
-    setOpen(false);
-    setAlertFlag();
-  };
+  // const handleClose4 = () => {
+  //   console.log("close 4");
+  //   setFlag4(false)
+  //   setAlertFlagTask4(false)
+  // };
 
-  const getAlertFlag = async () => {
-    const res = await axios.get("/roomMonitor/getFlag");
-    setFlag(res);
-  };
+  // const getAlertFlagTask3 = async () => {
+  //   const res = await axios.get("/roomMonitor/getTask3Flag");
+  //   if (res.data != flag3){
+  //     setFlag3(res.data);
+  //   }
+  // };
 
-  const setAlertFlag = async () => {
-    const res = await axios.post("/roomMonitor/setFlag/" + String(!flag));
-    setFlag(res);
-  };
+  // const setAlertFlagTask3 = async (flag) => {
+  //   console.log("close 3");
+  //   const res = await axios.post("/roomMonitor/setTask3Flag/" + String(flag));
+  //   setFlag3(res.data);
+  // };
 
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     getAlertFlag();
-  //     if (flag === true) {
-  //       if (window.location.href == "http://localhost:3000/room-monitor")
-  //         openDialog();
-  //     };
-  //   }, 2000);
-  // }, []);
+  // const getAlertFlagTask4 = async () => {
+  //   const res = await axios.get("/roomMonitor/getTask4Flag");
+  //   setFlag4(res.data);
+  // };
+
+  // const setAlertFlagTask4 = async (flag) => {
+  //   console.log("close 4");
+  //   const res = await axios.post("/roomMonitor/setTask4Flag/" + String(flag));
+  //   // setFlag4(res.data);
+  //   if (res.data != flag4){
+  //     setFlag4(res.data);
+  //   }
+  // };
 
   // Fetch env variable
   const fetchEnvVariables = async () => {
@@ -83,10 +85,8 @@ const RoomMonitor = (props) => {
     setInterval(() => {
       if (window.location.href == "http://localhost:3000/room-monitor") {
         fetchEnvVariables();
-        getAlertFlag();
-        if (flag === true) { 
-          openDialog();
-        }
+        // getAlertFlagTask3();
+        // getAlertFlagTask4();
         fetchPeopleVariables();
       }
 
@@ -139,25 +139,43 @@ const RoomMonitor = (props) => {
       </div>
 
       {/* ****************************** DIAGLOG ****************************** */}
-      <Dialog
-        open={open}
-        onClose={handleClose}
+      {/* <Dialog
+        open={flag3}
+        onClose={(e) => handleClose3()}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">WARNING</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            There is a person or group of people in the room violate the social
-            distancing rule.
+            There are some groups of 2 people who violate social distance rule of 1.5m. PLEASE TAKE ACTION IMMEDIATELY!!!
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={(e) => handleClose3()} autoFocus>
             OK
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={flag4}
+        onClose={(e) => handleClose4()}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">WARNING</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            There is a group of 3 people gathering. PLEASE TAKE ACTION IMMEDIATELY!!!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={(e) => handleClose4()} autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog> */}
     </Layout>
   );
 };
